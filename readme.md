@@ -20,6 +20,9 @@ Previous React project
 - /public
 - /__mocks__/assetsMock.js
 
+- .github/workflows/sonar.yml
+- sonar-project.properties
+
 Install redux
 
 ```shell
