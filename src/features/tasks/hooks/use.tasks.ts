@@ -1,10 +1,22 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Task } from "../models/task";
 import { ApiRepository } from "../../../core/services/api.repository";
 import { consoleError } from "../../../core/services/errors";
+import { AppDispatch, RootState } from "../../../core/store/store";
+import * as ac from "../redux/actions.creator";
+// import { useAppDispatch, useAppSelector } from "../../../core/store/hooks";
 
 export function useTasks() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  // const [tasks, setTasks] = useState<Task[]>([]);
+  // const [tasks, dispatch] = useReducer<Task[]>(taskReducer, []);
+
+  const { tasks } = useSelector((state: RootState) => state.tasks);
+  const dispatch: AppDispatch = useDispatch();
+
+  // const { tasks } = useAppSelector((state) => state.tasks);
+  // const dispatch = useAppDispatch();
+
   const taskUrl = "http://localhost:3000/tasks/";
 
   const repo: ApiRepository<Task> = useMemo(
@@ -14,8 +26,8 @@ export function useTasks() {
 
   const handleLoad = useCallback(async () => {
     const loadedTasks = await repo.getAll();
-    setTasks(loadedTasks);
-  }, [repo]);
+    dispatch(ac.loadTaskAction(loadedTasks));
+  }, [repo, dispatch]);
 
   useEffect(() => {
     handleLoad();
@@ -24,7 +36,7 @@ export function useTasks() {
   const handleAdd = async (task: Task) => {
     try {
       const newTask = await repo.create(task);
-      setTasks([...tasks, newTask]);
+      dispatch(ac.createTaskAction(newTask));
     } catch (error) {
       consoleError(error);
     }
@@ -33,7 +45,7 @@ export function useTasks() {
   const handleUpdate = async (task: Task) => {
     try {
       const updatedTask = await repo.update(task.id, task);
-      setTasks(tasks.map((item) => (item.id === task.id ? updatedTask : item)));
+      dispatch(ac.updateTaskAction(updatedTask));
     } catch (error) {
       consoleError(error);
     }
@@ -42,7 +54,7 @@ export function useTasks() {
   const handleDelete = async (task: Task) => {
     try {
       await repo.delete(task.id);
-      setTasks(tasks.filter((item) => item.id !== task.id));
+      dispatch(ac.deleteTaskAction(task.id));
     } catch (error) {
       consoleError(error);
     }

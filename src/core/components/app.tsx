@@ -1,7 +1,7 @@
 import logo from "./logo.svg";
 import { Counter } from "../../features/counter/components/counter/counter";
-import "./App.css";
 import ToDo from "../../features/tasks/components/todo/todo";
+import "./App.css";
 
 function App() {
   return (

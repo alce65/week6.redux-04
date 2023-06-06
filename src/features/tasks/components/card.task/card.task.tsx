@@ -1,15 +1,15 @@
+import { useTasks } from "../../hooks/use.tasks";
 import { Task } from "../../models/task";
 
 type PropsType = {
   item: Task;
-  handleUpdate: (task: Task) => void;
-  handleDelete: (task: Task) => void;
 };
 
-export function CardTask({ item, handleUpdate, handleDelete }: PropsType) {
+export function CardTask({ item }: PropsType) {
+  const { handleUpdate, handleDelete } = useTasks();
+
   const handleChange = () => {
-    item.isCompleted = !item.isCompleted;
-    handleUpdate(item);
+    handleUpdate({ ...item, isCompleted: !item.isCompleted });
   };
 
   const handleClick = () => {

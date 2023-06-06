@@ -1,13 +1,12 @@
 import { SyntheticEvent, useState } from "react";
 import { Task } from "../../models/task";
+import { useTasks } from "../../hooks/use.tasks";
 
 type FormState = Pick<Task, "title" | "owner">;
 
-type PropsType = {
-  handleAdd: (task: Task) => void;
-};
+export function AddTask() {
+  const { handleAdd } = useTasks();
 
-export function AddTask({ handleAdd }: PropsType) {
   const [formState, setFormState] = useState<FormState>({
     title: "",
     owner: "",
