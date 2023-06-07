@@ -5,7 +5,6 @@ import ToDo from "./todo";
 // import { useTasks } from "../../hooks/use.tasks";
 import { Task } from "../../models/task";
 import { Provider } from "react-redux";
-import { store } from "../../../../core/store/store";
 import { configureStore } from "@reduxjs/toolkit";
 import { taskReducer } from "../../redux/reducer";
 

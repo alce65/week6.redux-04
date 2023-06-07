@@ -1,9 +1,14 @@
+import { useEffect } from "react";
 import { AddTask } from "../add.task/add.task";
 import { CardTask } from "../card.task/card.task";
 import { useTasks } from "../../hooks/use.tasks";
 
 export default function ToDo() {
-  const { tasks } = useTasks();
+  const { tasks, handleLoad } = useTasks();
+
+  useEffect(() => {
+    handleLoad();
+  }, [handleLoad]);
 
   return (
     <section>

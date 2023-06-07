@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Task } from "../models/task";
 import { ApiRepository } from "../../../core/services/api.repository";
 import { consoleError } from "../../../core/services/errors";
 import { AppDispatch, RootState } from "../../../core/store/store";
 import * as ac from "../redux/actions.creator";
+import { addTaskAsync, loadTasksAsync } from "../redux/thunk";
 // import { useAppDispatch, useAppSelector } from "../../../core/store/hooks";
 
 export function useTasks() {
@@ -24,22 +25,29 @@ export function useTasks() {
     []
   );
 
-  const handleLoad = useCallback(async () => {
-    const loadedTasks = await repo.getAll();
-    dispatch(ac.loadTaskAction(loadedTasks));
+  const handleLoad = useCallback(() => {
+    // try {
+    //   const loadedTasks = await repo.getAll();
+    //   dispatch(ac.loadTaskAction(loadedTasks));
+    // } catch (error) {
+    //   consoleError(error);
+    // }
+    dispatch(loadTasksAsync(repo));
   }, [repo, dispatch]);
 
-  useEffect(() => {
-    handleLoad();
-  }, [handleLoad]);
-
   const handleAdd = async (task: Task) => {
-    try {
-      const newTask = await repo.create(task);
-      dispatch(ac.createTaskAction(newTask));
-    } catch (error) {
-      consoleError(error);
-    }
+    // try {
+    //   const newTask = await repo.create(task);
+    //   dispatch(ac.createTaskAction(newTask));
+    // } catch (error) {
+    //   consoleError(error);
+    // }
+    dispatch(
+      addTaskAsync({
+        repo,
+        task,
+      })
+    );
   };
 
   const handleUpdate = async (task: Task) => {
@@ -62,6 +70,7 @@ export function useTasks() {
 
   return {
     tasks,
+    handleLoad,
     handleAdd,
     handleUpdate,
     handleDelete,

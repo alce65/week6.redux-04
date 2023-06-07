@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Task } from "../models/task";
+import { addTaskAsync, loadTasksAsync } from "./thunk";
 
 export type TasksState = {
   tasks: Task[];
@@ -31,6 +32,28 @@ const sliceTasks = createSlice({
         item.id === (payload as Task).id ? (payload as Task) : item
       ),
     }),
+  },
+  extraReducers: (builder) => {
+    builder.addCase(loadTasksAsync.pending, (state) => ({
+      ...state,
+      isLoading: true,
+    }));
+
+    builder.addCase(loadTasksAsync.fulfilled, (state, { payload }) => ({
+      ...state,
+      isLoading: false,
+      tasks: payload,
+    }));
+
+    builder.addCase(loadTasksAsync.rejected, (state) => ({
+      ...state,
+      hasError: "Error cargando tareas",
+    }));
+
+    builder.addCase(addTaskAsync.fulfilled, (state, { payload }) => ({
+      ...state,
+      tasks: [...state.tasks, payload],
+    }));
   },
 });
 
